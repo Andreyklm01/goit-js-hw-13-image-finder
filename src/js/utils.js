@@ -1,5 +1,7 @@
-function incrementPage(value) {}
+function incrementPage(value) {
+  this.page += 1;
+}
 
-function decrementPage(value) {}
-
-function resetPage() {}
+function resetPage() {
+  this.page = 1;
+}
