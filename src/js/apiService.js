@@ -1,45 +1,53 @@
 import api from './settings';
 const { BASE_URL, API_KEY } = api;
+import utils from './utils';
+const { incrementPage, resetPage } = utils;
 import galleryTmpl from '../templates/gallery-tmpl.hbs';
 import cardTmpl from '../templates/card-tmpl.hbs';
 
 async function apiService(searchQuery) {
-  try {
-    const searchList = await fetch(
-      `${BASE_URL}&q=${searchQuery}&page=1&per_page=12&key=${API_KEY}`,
-    )
-      .then(result => result.json())
-      .then(data => data.hits);
-    //нужно вытянуть нужные параметры из хитс
-    return searchList;
-  } catch (error) {
-    console.log(error);
-  }
+  let page = 1;
+  const searchList = await fetch(
+    `${BASE_URL}&q=${searchQuery}&page=${page}&per_page=12&key=${API_KEY}`,
+  );
+  const searchResult = await searchList.json();
+  // incrementPage(page);
+  return searchResult;
 }
 
 const galleryRef = document.querySelector('.gallery');
 const formRef = document.querySelector('#search-form');
 const inputRef = document.querySelector('input');
+const btnRef = document.querySelector('#load-more');
+btnRef.classList.add('is-hidden');
 
-formRef.addEventListener('submit', event => {
+formRef.addEventListener('submit', getImages);
+// btnRef.addEventListener('click', getImages);
+
+function getImages(event) {
   event.preventDefault();
 
-  console.log(inputRef.value);
-  // не рендерется шаблон
-  const query = apiService(inputRef.value);
-  markupCard(query);
+  if (inputRef.value === '') {
+    btnRef.classList.add('is-hidden');
+  } else {
+    apiService(inputRef.value).then(data => {
+      markupCard(data.hits, galleryRef);
+    });
+    btnRef.classList.remove('is-hidden');
+    // incrementPage;
+  }
+  resetMarkup(galleryRef);
   formRef.reset();
-});
-
-function markupCard(value) {
-  const card = cardTmpl(value);
-
-  const addElement = document.createElement('li');
-  addElement.insertAdjacentHTML('beforeend', card);
-  galleryRef.appendChild(addElement);
 }
 
-//Если промис возвращает true, зарендерить разметку каждого в кард.
-// Затем зарендерить в ul галерею
+function markupCard(value, ref) {
+  const card = cardTmpl(value);
+  ref.insertAdjacentHTML('beforeend', card);
+}
+
+function resetMarkup(element) {
+  element.textContent = '';
+}
+
 // написать функцию увеличения страниці на 1, и сброса на 1, при изменении запроса
-// Добавить кнопку лоад море, которая получает еще 12 объектов и рендерит результат
+// Добавить кнопку лоад море, которая получает еще 12 объектов и стаивит страницу +1

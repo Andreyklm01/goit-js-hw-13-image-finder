@@ -1,7 +1,9 @@
-function incrementPage(value) {
-  this.page += 1;
+function incrementPage(page) {
+  page += 1;
 }
 
-function resetPage(value) {
-  this.page = 1;
+function resetPage(page) {
+  page = 1;
 }
+
+export default { incrementPage, resetPage };
