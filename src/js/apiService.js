@@ -5,6 +5,12 @@ const { incrementPage, resetPage } = utils;
 import galleryTmpl from '../templates/gallery-tmpl.hbs';
 import cardTmpl from '../templates/card-tmpl.hbs';
 
+const galleryRef = document.querySelector('.gallery');
+const formRef = document.querySelector('#search-form');
+const inputRef = document.querySelector('input');
+const btnRef = document.querySelector('#load-more');
+btnRef.classList.add('is-hidden');
+
 async function apiService(searchQuery) {
   let page = 1;
   const searchList = await fetch(
@@ -15,29 +21,35 @@ async function apiService(searchQuery) {
   return searchResult;
 }
 
-const galleryRef = document.querySelector('.gallery');
-const formRef = document.querySelector('#search-form');
-const inputRef = document.querySelector('input');
-const btnRef = document.querySelector('#load-more');
-btnRef.classList.add('is-hidden');
-
 formRef.addEventListener('submit', getImages);
-// btnRef.addEventListener('click', getImages);
+btnRef.addEventListener('click', onBtnClick);
+
+let temp = ''; //костыль для сохранения локальной переменной в глобальную
 
 function getImages(event) {
   event.preventDefault();
 
   if (inputRef.value === '') {
-    btnRef.classList.add('is-hidden');
+    btnRef.classList.add('is-hidden'); //переделать
+    return;
   } else {
     apiService(inputRef.value).then(data => {
       markupCard(data.hits, galleryRef);
     });
+    temp = inputRef.value;
+    console.log(temp);
     btnRef.classList.remove('is-hidden');
-    // incrementPage;
   }
   resetMarkup(galleryRef);
-  formRef.reset();
+}
+
+function onBtnClick(value) {
+  console.log(value);
+  value = temp;
+  apiService(value).then(data => {
+    //переделать, повторяется
+    markupCard(data.hits, galleryRef);
+  });
 }
 
 function markupCard(value, ref) {
@@ -50,4 +62,3 @@ function resetMarkup(element) {
 }
 
 // написать функцию увеличения страниці на 1, и сброса на 1, при изменении запроса
-// Добавить кнопку лоад море, которая получает еще 12 объектов и стаивит страницу +1
