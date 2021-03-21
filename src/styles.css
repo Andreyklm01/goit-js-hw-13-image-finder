@@ -38,6 +38,10 @@ li {
   margin-left: 42%;
   border: none;
   cursor: pointer;
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.load-more-btn:hover {
+  background-color: rgb(89, 89, 248);
 }
 
 .is-hidden {
@@ -48,7 +52,7 @@ li {
   justify-content: center;
 }
 
-.search-form__input {
+.search-input {
   margin: 0 0 0 30px;
   display: inline-block;
   width: 300px;
@@ -93,6 +97,7 @@ li {
 .img {
   width: 100%;
   height: 200px;
+  cursor: pointer;
 }
 .stats {
   display: flex;

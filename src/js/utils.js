@@ -23,4 +23,10 @@ function resetMarkup(element) {
   element.textContent = '';
 }
 
-export default { addClass, removeClass, markupCard, resetMarkup, scrollPage };
+export default {
+  addClass,
+  removeClass,
+  markupCard,
+  resetMarkup,
+  scrollPage,
+};
