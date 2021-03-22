@@ -1,16 +1,19 @@
 import cardTmpl from '../templates/card-tmpl.hbs';
+import '@pnotify/core/dist/PNotify.css';
+import '@pnotify/core/dist/BrightTheme.css';
+const { alert } = require('@pnotify/core');
 
 function addClass(tag) {
-  setTimeout(() => {
-    tag.classList.add('is-hidden');
-  }, 0);
+  tag.classList.add('is-hidden');
 }
 function removeClass(tag) {
   tag.classList.remove('is-hidden');
 }
-function scrollPage(number) {
-  window.scrollBy({
-    top: number,
+function scrollPage(ref) {
+  const { y } = ref.getBoundingClientRect();
+  const screenHeight = document.documentElement.clientHeight;
+  window.scrollTo({
+    top: screenHeight - y,
     behavior: 'smooth',
   });
 }
@@ -22,6 +25,21 @@ function markupCard(value, ref) {
 function resetMarkup(element) {
   element.textContent = '';
 }
+function onEmptyQuery() {
+  alert({
+    text: 'Please enter query',
+    type: 'error',
+    delay: 1000,
+  });
+}
+
+function onNotFound() {
+  alert({
+    text: 'Not found',
+    type: 'error',
+    delay: 1000,
+  });
+}
 
 export default {
   addClass,
@@ -29,4 +47,6 @@ export default {
   markupCard,
   resetMarkup,
   scrollPage,
+  onEmptyQuery,
+  onNotFound,
 };
